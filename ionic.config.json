@@ -1,0 +1,7 @@
+{
+  "name": "CarParkALPR",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
