@@ -22,12 +22,22 @@
         </ion-item>
         <ion-item>
           <ion-label>{{ photo.detectionResult }}</ion-label>
+          <ion-label>{{ photo.resultsArray }}</ion-label>
         </ion-item>
         <ion-item >
-          <ion-label>{{ photo.resultsArray }}</ion-label>
+          <ion-label>{{ photo.plateNumber }}</ion-label>
+        </ion-item>
+        <ion-item >
+          <ion-label>{{ photo.confidence }}</ion-label>
         </ion-item>
 
       </ion-col>
+      <!-- <ion-col size="12" *ngFor="let resData of photoService.openALPRResults; index as position">
+        <ion-item >
+          <ion-label>{{ resData.number }}</ion-label>
+          <ion-label>{{ resData.confidence }}</ion-label>
+        </ion-item>
+      </ion-col> -->
     </ion-row>
   </ion-grid>
   

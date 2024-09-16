@@ -9,31 +9,42 @@ import { OpenALPR, OpenALPROptions, OpenALPRResult } from '@awesome-cordova-plug
 })
 export class PhotoService {
   public photos: UserPhoto[] = [];
+  public openALPRResults: OpenALPRResult[] = [];
 
   constructor(private openALPR: OpenALPR) { }
 
   public async addNewToGallery() {
     // Take a photo
     const capturedPhoto = await Camera.getPhoto({
-      resultType: CameraResultType.Uri,
+      resultType: CameraResultType.Base64,
       source: CameraSource.Camera,
       quality: 100
     });
 
     let res = '';
 
-    this.openALPR.scan(capturedPhoto.dataUrl, {
-      country: this.openALPR.Country.EU,
+    this.openALPR.scan(capturedPhoto.base64String, {
+      country: this.openALPR.Country.US,
       amount: 3
     }).then((result: [OpenALPRResult]) => {
 
       res = "Success";
 
+      result.sort((a, b) => {
+        if (a.confidence > b.confidence) return -1;
+        if (a.confidence < b.confidence) return 1;
+        return 0;
+      })
+
+      this.openALPRResults.push(...result)
+
       this.photos.unshift({
-        filepath: "soon...",
+        filepath: capturedPhoto.format,
         webviewPath: capturedPhoto.webPath!,
         detectionResult: res!,
-        resultsArray: result.length!
+        resultsArray: result.length!,
+        plateNumber: result[0].number!,
+        confidence: result[0].confidence!
       });
     })
       .catch(error => {
@@ -45,7 +56,7 @@ export class PhotoService {
           webviewPath: capturedPhoto.webPath!,
           detectionResult: res!
         });
-        
+
       });
   }
 }
@@ -55,4 +66,6 @@ export interface UserPhoto {
   webviewPath?: string;
   detectionResult?: string;
   resultsArray?: number;
+  plateNumber?: string;
+  confidence?: number;
 }
