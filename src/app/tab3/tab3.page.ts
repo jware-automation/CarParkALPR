@@ -1,12 +1,32 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { VideoService } from '../services/video.service';
 
 @Component({
   selector: 'app-tab3',
   templateUrl: 'tab3.page.html',
-  styleUrls: ['tab3.page.scss']
+  styleUrls: ['tab3.page.scss'],
 })
-export class Tab3Page {
+export class Tab3Page implements AfterViewInit {
+  @ViewChild('videoFeed', { static: false }) videoFeed!: ElementRef<HTMLVideoElement>;
+  detectedPlate: string | null = null;
+  scanningInProgress = false;
 
-  constructor() {}
+  constructor(private videoService: VideoService) {}
 
+  ngAfterViewInit() {
+    this.startScanner();
+  }
+
+  async startScanner() {
+    this.scanningInProgress = true;
+    const videoStream = await this.videoService.startVideoStream(this.videoFeed.nativeElement);
+    
+    if (videoStream) {
+      this.detectedPlate = await this.videoService.scanVideoStream();
+      this.scanningInProgress = false;
+    } else {
+      this.scanningInProgress = false;
+      this.detectedPlate = null;
+    }
+  }
 }

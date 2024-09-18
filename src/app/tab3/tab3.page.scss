@@ -1,0 +1,19 @@
+.scanner-container {
+    text-align: center;
+    padding: 16px;
+}
+
+.status-message {
+    font-size: 1.2em;
+    color: #ffcc00;
+}
+
+.result-success {
+    font-size: 1.5em;
+    color: #4caf50; // Green color for success
+}
+
+.result-failure {
+    font-size: 1.5em;
+    color: #f44336; // Red color for failure
+}

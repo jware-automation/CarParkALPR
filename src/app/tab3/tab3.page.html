@@ -1,17 +1,18 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>
-      Tab 3
-    </ion-title>
+    <ion-title>Vehicle Plate Scanner v.1</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+<ion-content>
+  <div class="scanner-container">
+    <video #videoFeed autoplay playsinline></video>
+    <div *ngIf="scanningInProgress" class="status-message">Please wait...</div>
+    <div *ngIf="detectedPlate" class="result-success">
+      Detected Plate: {{ detectedPlate }}
+    </div>
+    <div *ngIf="!detectedPlate && !scanningInProgress" class="result-failure">
+      No plate detected or scanning failed.
+    </div>
+  </div>
 </ion-content>

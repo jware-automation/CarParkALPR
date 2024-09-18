@@ -25,15 +25,25 @@ export class PhotoService {
       quality: 100
     });
 
+      // Show the captured photo and "Processing..." immediately
+    this.photos.unshift({
+      filepath: capturedPhoto.format,
+      webviewPath: capturedPhoto.webPath!,
+      detectionResult: 'Processing...', // Show "Processing..." initially
+    });
+
     let res = '';
     const base64Data = await this.readAsBase64(capturedPhoto);
+
+    console.log('base64Data:', base64Data);
 
     this.openALPR.scan(base64Data, {
       country: this.openALPR.Country.US,
       amount: 3
     }).then((result: [OpenALPRResult]) => {
-
+      const updatedPhoto = this.photos[0]; // Access the most recent photo
       res = "Success";
+      this.photos.shift(); // Remove the "Processing..." message
 
       result.sort((a, b) => {
         if (a.confidence > b.confidence) return -1;
@@ -76,6 +86,8 @@ export class PhotoService {
       return file.data;
     }
     else {
+      this.photos.shift(); // Remove the "Processing..." message
+      
       // Fetch the photo, read as a blob, then convert to base64 format
       const response = await fetch(photo.webPath!);
       const blob = await response.blob();
