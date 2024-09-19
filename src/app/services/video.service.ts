@@ -36,6 +36,7 @@ export class VideoService {
   async scanVideoStream(videoElement: HTMLVideoElement): Promise<string | null> {
     return new Promise<string | null>((resolve) => {
       const captureFrame = async () => {
+        this.videoStreamStatus = "scan steam";
         if (this.scanningPaused || !this.videoStream) return; // Stop capturing if paused
         
         // Create a canvas to capture the current video frame
@@ -54,10 +55,14 @@ export class VideoService {
         this.base64Data = await this.readAsBase64(capturedPhoto);
 
         this.base64Data = this.base64Data.split(',')[1];
+
+
         // this.videoStreamStatus = this.base64Data;
+
+
         // this.videoFrameCount++;
 
-        if (this.platform.is('cordova')) {
+        if (this.platform.is('cordova') && this.base64Data) {
           // Use OpenALPR if running on Cordova
           try {
             const result: [OpenALPRResult] = await this.openALPR.scan(this.base64Data, {
@@ -94,7 +99,11 @@ export class VideoService {
         }
       };
 
-      captureFrame();
+      try{
+        captureFrame();
+      } catch (error) {
+        this.videoStreamError = 'Error capturing frame';
+      }
     });
   }
 
