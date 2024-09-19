@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { OpenALPR, OpenALPRResult } from '@awesome-cordova-plugins/openalpr/ngx';
 import { Platform } from '@ionic/angular';
+import { PlateDataService } from './plate-data.service';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +17,7 @@ export class VideoService {
   public currentPlate: string | null = null; // Holds the current detected plate
   private scanningPaused: boolean = false; // Controls whether to capture new frames
   public currentFrameImage: string | null = null; // Holds the current captured frame as image
-  constructor(private platform: Platform, private openALPR: OpenALPR) {}
+  constructor(private platform: Platform, private openALPR: OpenALPR, private plateDataService: PlateDataService) {}
 
   async startVideoStream(videoElement: HTMLVideoElement): Promise<MediaStream | null> {
     try {
@@ -69,6 +70,7 @@ export class VideoService {
               this.currentPlate = result[0].number;
               this.scanningPaused = true;
               this.currentFrameImage = capturedPhoto; // Save the current captured image
+              this.plateDataService.savePlateData(this.currentPlate, this.currentFrameImage);
               resolve(result[0].number); // Resolve with detected plate
             } else {
               requestAnimationFrame(captureFrame); // Continue scanning if no result
