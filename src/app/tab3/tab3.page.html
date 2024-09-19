@@ -8,15 +8,31 @@
   <div class="scanner-container">
     <video #videoFeed autoplay playsinline></video>
     <div *ngIf="scanningInProgress" class="status-message">Please wait...</div>
-    <div *ngIf="detectedPlate" class="result-success">
-      Detected Plate: {{ detectedPlate }}
+    <div *ngIf="videoService.currentPlate" class="result-success">
+      Detected Plate: {{ videoService.currentPlate }}
     </div>
+
     <div *ngIf="!detectedPlate && !scanningInProgress" class="result-failure">
       No plate detected or scanning failed.
     </div>
     <div *ngIf="videoService.videoStreamError" class="result-failure">
       {{videoService.videoStreamError}}
     </div>
+
+    <div class="scanner-controls">
+      <ion-button *ngIf="videoService.currentPlate" (click)="saveAndStartNewScan()">Save and Scan New</ion-button>
+      <!-- <ion-button *ngIf="videoService.currentPlate"  (click)="saveAndStopScan()">Save and Stop</ion-button> -->
+      <ion-button *ngIf="videoService.currentPlate" (click)="clearAndStartNewScan()">Clear and Scan New</ion-button>
+    </div>
+    <div *ngIf="videoService.currentFrameImage" class="scanned-image">
+      <h3>Current Scanned Image</h3>
+      <img [src]="videoService.currentFrameImage" alt="Scanned Frame">
+    </div>
+
+    <ion-list>
+      <ion-item *ngFor="let plate of videoService.detectedPlates">{{ plate }}</ion-item>
+    </ion-list>
+
     <div *ngIf="videoService.videoStreamStatus" class="status-message">
       {{videoService.videoStreamStatus}}
     </div>

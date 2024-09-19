@@ -12,7 +12,10 @@ export class VideoService {
   // public videoFrameCount: number = 0;
   public base64Data: string = '';
   // public allDetectedPlates: string | null = null;
-
+  public detectedPlates: string[] = []; // Array to store detected plates
+  public currentPlate: string | null = null; // Holds the current detected plate
+  private scanningPaused: boolean = false; // Controls whether to capture new frames
+  public currentFrameImage: string | null = null; // Holds the current captured frame as image
   constructor(private platform: Platform, private openALPR: OpenALPR) {}
 
   async startVideoStream(videoElement: HTMLVideoElement): Promise<MediaStream | null> {
@@ -32,13 +35,13 @@ export class VideoService {
   async scanVideoStream(videoElement: HTMLVideoElement): Promise<string | null> {
     return new Promise<string | null>((resolve) => {
       const captureFrame = async () => {
-        if (!this.videoStream) return;
+        if (this.scanningPaused || !this.videoStream) return; // Stop capturing if paused
         
         // Create a canvas to capture the current video frame
         const canvas = document.createElement('canvas');
         canvas.width = videoElement.videoWidth * 0.95;
         canvas.height = videoElement.videoHeight * 0.95;
-        
+      
         const context = canvas.getContext('2d');
         if (!context) return;
 
@@ -63,6 +66,9 @@ export class VideoService {
 
             if (result.length > 0) {
               // this.allDetectedPlates += result[0].number + ', ';
+              this.currentPlate = result[0].number;
+              this.scanningPaused = true;
+              this.currentFrameImage = capturedPhoto; // Save the current captured image
               resolve(result[0].number); // Resolve with detected plate
             } else {
               requestAnimationFrame(captureFrame); // Continue scanning if no result
@@ -78,7 +84,9 @@ export class VideoService {
             requestAnimationFrame(captureFrame); // Continue scanning
           } else {
             setTimeout(() => {
-              resolve('MOCK123'); // Mock plate number
+              this.currentPlate = 'MOCK123'; // Mock plate number
+              this.scanningPaused = true; 
+              resolve(this.currentPlate);
             }, 5000); // Simulate a delay for scanning
           }
         }
@@ -86,6 +94,24 @@ export class VideoService {
 
       captureFrame();
     });
+  }
+
+  saveAndStartNewScan(): void {
+    if (this.currentPlate) {
+      this.detectedPlates.push(this.currentPlate); // Save the current plate to the array
+      this.currentPlate = null; // Reset the current plate
+    }
+    this.scanningPaused = false;
+    this.currentFrameImage = null; // Reset current image
+    this.scanVideoStream(document.querySelector('video')!); // Start a new scan
+  }
+
+  clearAndStartNewScan(): void {
+    // this.detectedPlates = []; // Clear the detected plates array
+    this.currentPlate = null; // Reset the current plate
+    this.currentFrameImage = null; // Reset current image
+    this.scanningPaused = false;
+    this.scanVideoStream(document.querySelector('video')!); // Start
   }
 
   private async readAsBase64(photo: string): Promise<string> {
@@ -104,5 +130,7 @@ export class VideoService {
     };
     reader.readAsDataURL(blob);
   });
+
+  
 }
 

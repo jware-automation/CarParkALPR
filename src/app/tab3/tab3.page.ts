@@ -29,4 +29,14 @@ export class Tab3Page implements AfterViewInit {
       this.detectedPlate = null;
     }
   }
+
+  saveAndStartNewScan() {
+    this.videoService.saveAndStartNewScan();
+  }
+  
+  clearAndStartNewScan() {
+    this.videoService.clearAndStartNewScan();
+  }
+  
+
 }
