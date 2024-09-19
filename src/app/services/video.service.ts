@@ -36,8 +36,8 @@ export class VideoService {
         
         // Create a canvas to capture the current video frame
         const canvas = document.createElement('canvas');
-        canvas.width = videoElement.videoWidth; // Use the video width
-        canvas.height = videoElement.videoHeight; // Use the video height
+        canvas.width = videoElement.videoWidth * 0.95;
+        canvas.height = videoElement.videoHeight * 0.95;
         
         const context = canvas.getContext('2d');
         if (!context) return;

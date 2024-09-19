@@ -3,6 +3,13 @@
     padding: 16px;
 }
 
+video {
+    width: 100%;
+    height: auto;
+    max-height: 90%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
 .status-message {
     font-size: 1.2em;
     color: #ffcc00;
