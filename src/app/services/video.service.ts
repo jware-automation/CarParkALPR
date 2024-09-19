@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { OpenALPR, OpenALPRResult } from '@awesome-cordova-plugins/openalpr/ngx';
 import { Platform } from '@ionic/angular';
 import { PlateDataService } from './plate-data.service';
+import { Ocr, TextDetections } from '@capacitor-community/image-to-text';
 
 @Injectable({
   providedIn: 'root',
@@ -10,6 +11,8 @@ export class VideoService {
   private videoStream: MediaStream | null = null;
   public videoStreamStatus: string = 'Not Started';
   public videoStreamError: string = '';
+  public textDetections: any[] = [];
+  public detectedText: string = '';
   // public videoFrameCount: number = 0;
   public base64Data: string = '';
   // public allDetectedPlates: string | null = null;
@@ -62,27 +65,30 @@ export class VideoService {
 
         // this.videoFrameCount++;
 
-        if (this.platform.is('cordova') && this.base64Data) {
+        if (this.platform.is('cordova')) {
           // Use OpenALPR if running on Cordova
-          try {
-            const result: [OpenALPRResult] = await this.openALPR.scan(this.base64Data, {
-              country: this.openALPR.Country.US,
-              amount: 3,
-            });
+          if (this.base64Data){
+            try {
+              const result: [OpenALPRResult] = await this.openALPR.scan(this.base64Data, {
+                country: this.openALPR.Country.US,
+                amount: 3,
+              });
 
-            if (result.length > 0) {
-              // this.allDetectedPlates += result[0].number + ', ';
-              this.currentPlate = result[0].number;
-              this.scanningPaused = true;
-              this.currentFrameImage = capturedPhoto; // Save the current captured image
-              this.plateDataService.savePlateData(this.currentPlate, this.currentFrameImage);
-              resolve(result[0].number); // Resolve with detected plate
-            } else {
-              requestAnimationFrame(captureFrame); // Continue scanning if no result
+              if (result.length > 0) {
+                // this.allDetectedPlates += result[0].number + ', ';
+                this.currentPlate = result[0].number;
+                this.scanningPaused = true;
+                this.currentFrameImage = capturedPhoto; // Save the current captured image
+                // this.detectedText = await this.frameTextDetection(capturedPhoto);
+                this.plateDataService.savePlateData(this.currentPlate, this.currentFrameImage);
+                resolve(result[0].number); // Resolve with detected plate
+              } else {
+                requestAnimationFrame(captureFrame); // Continue scanning if no result
+              }
+            } catch (error) {
+              console.error('ALPR scan failed', error);
+              resolve(null); // Handle failure
             }
-          } catch (error) {
-            console.error('ALPR scan failed', error);
-            resolve(null); // Handle failure
           }
         } else {
           // Mock results for web browser
@@ -141,6 +147,19 @@ export class VideoService {
     };
     reader.readAsDataURL(blob);
   });
+
+  //ocr text detection
+  // private frameTextDetection = async (photo: string): Promise<string> => {
+  //   const data: TextDetections = await Ocr.detectText({
+  //     filename: photo!,
+  //   });
+
+  //   console.log(data);
+
+  //   this.textDetections = data.textDetections;
+  //   console.log(this.textDetections);
+  //   return data.textDetections[0].text;
+  // }
 
   
 }

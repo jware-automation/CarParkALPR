@@ -11,6 +11,9 @@
     <div *ngIf="videoService.currentPlate" class="result-success">
       Detected Plate: {{ videoService.currentPlate }}
     </div>
+    <!-- <div *ngIf="videoService.textDetections" class="result-success">
+      Detected Plate: {{ videoService.textDetections }}
+    </div> -->
 
     <div *ngIf="!detectedPlate && !scanningInProgress" class="result-failure">
       No plate detected or scanning failed.
