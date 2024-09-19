@@ -14,5 +14,20 @@
     <div *ngIf="!detectedPlate && !scanningInProgress" class="result-failure">
       No plate detected or scanning failed.
     </div>
+    <div *ngIf="videoService.videoStreamError" class="result-failure">
+      {{videoService.videoStreamError}}
+    </div>
+    <div *ngIf="videoService.videoStreamStatus" class="status-message">
+      {{videoService.videoStreamStatus}}
+    </div>
+    <!-- <div *ngIf="videoService.videoFrameCount" class="status-message">
+      {{videoService.videoFrameCount}}
+    </div> -->
+    <!-- <div *ngIf="videoService.allDetectedPlates" class="result-success">
+      Detected Plates: 
+      <div *ngFor="let plate of videoService.allDetectedPlates">
+        {{ plate }}
+      </div>
+    </div> -->
   </div>
 </ion-content>

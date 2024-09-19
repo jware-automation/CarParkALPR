@@ -8,6 +8,7 @@
 *.tmp.*
 UserInterfaceState.xcuserstate
 $RECYCLE.BIN/
+cmd.exe
 
 *.log
 log.txt

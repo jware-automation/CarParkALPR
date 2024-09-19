@@ -11,7 +11,7 @@ export class Tab3Page implements AfterViewInit {
   detectedPlate: string | null = null;
   scanningInProgress = false;
 
-  constructor(private videoService: VideoService) {}
+  constructor(public videoService: VideoService) {}
 
   ngAfterViewInit() {
     this.startScanner();
@@ -22,7 +22,7 @@ export class Tab3Page implements AfterViewInit {
     const videoStream = await this.videoService.startVideoStream(this.videoFeed.nativeElement);
     
     if (videoStream) {
-      this.detectedPlate = await this.videoService.scanVideoStream();
+      this.detectedPlate = await this.videoService.scanVideoStream(this.videoFeed.nativeElement);
       this.scanningInProgress = false;
     } else {
       this.scanningInProgress = false;
