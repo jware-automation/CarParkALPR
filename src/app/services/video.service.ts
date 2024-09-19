@@ -9,7 +9,7 @@ import { Ocr, TextDetections } from '@capacitor-community/image-to-text';
 })
 export class VideoService {
   private videoStream: MediaStream | null = null;
-  public videoStreamStatus: string = 'Not Started';
+  public videoStreamStatus: string = '';
   public videoStreamError: string = '';
   public textDetections: any[] = [];
   public detectedText: string = '';
@@ -27,7 +27,7 @@ export class VideoService {
       const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
       videoElement.srcObject = stream;
       this.videoStream = stream;
-      this.videoStreamStatus = 'Started';
+      // this.videoStreamStatus = 'Started';
       return stream;
     } catch (error) {
       console.error('Error accessing the camera', error);
@@ -39,7 +39,7 @@ export class VideoService {
   async scanVideoStream(videoElement: HTMLVideoElement): Promise<string | null> {
     return new Promise<string | null>((resolve) => {
       const captureFrame = async () => {
-        this.videoStreamStatus = "scan steam";
+        // this.videoStreamStatus = "scan steam";
         if (this.scanningPaused || !this.videoStream) return; // Stop capturing if paused
         
         // Create a canvas to capture the current video frame
@@ -65,42 +65,46 @@ export class VideoService {
 
         // this.videoFrameCount++;
 
-        if (this.platform.is('cordova')) {
+        if (this.platform.is('cordova') && this.base64Data) {
           // Use OpenALPR if running on Cordova
-          if (this.base64Data){
-            try {
-              const result: [OpenALPRResult] = await this.openALPR.scan(this.base64Data, {
-                country: this.openALPR.Country.US,
-                amount: 3,
-              });
+          try {
+            const result: [OpenALPRResult] = await this.openALPR.scan(this.base64Data, {
+              country: this.openALPR.Country.US,
+              amount: 3,
+            });
 
-              if (result.length > 0) {
-                // this.allDetectedPlates += result[0].number + ', ';
-                this.currentPlate = result[0].number;
-                this.scanningPaused = true;
-                this.currentFrameImage = capturedPhoto; // Save the current captured image
-                // this.detectedText = await this.frameTextDetection(capturedPhoto);
-                this.plateDataService.savePlateData(this.currentPlate, this.currentFrameImage);
-                resolve(result[0].number); // Resolve with detected plate
-              } else {
-                requestAnimationFrame(captureFrame); // Continue scanning if no result
-              }
-            } catch (error) {
-              console.error('ALPR scan failed', error);
-              resolve(null); // Handle failure
+            if (result.length > 0) {
+              // this.allDetectedPlates += result[0].number + ', ';
+              this.currentPlate = result[0].number;
+              this.scanningPaused = true;
+              this.currentFrameImage = capturedPhoto; // Save the current captured image
+              // this.detectedText = await this.frameTextDetection(capturedPhoto);
+              this.plateDataService.savePlateData(this.currentPlate, this.currentFrameImage);
+              resolve(result[0].number); // Resolve with detected plate
+            } else {
+              requestAnimationFrame(captureFrame); // Continue scanning if no result
             }
+          } catch (error) {
+            console.error('ALPR scan failed', error);
+            resolve(null); // Handle failure
           }
         } else {
-          // Mock results for web browser
-          console.log('Cordova not available, using mock result');
-          if (Math.floor(Math.random() * 6) !== 3) {
-            requestAnimationFrame(captureFrame); // Continue scanning
-          } else {
-            setTimeout(() => {
-              this.currentPlate = 'MOCK123'; // Mock plate number
-              this.scanningPaused = true; 
-              resolve(this.currentPlate);
-            }, 5000); // Simulate a delay for scanning
+          if (!this.platform.is('cordova') ){
+
+            // Mock results for web browser
+            console.log('Cordova not available, using mock result');
+            if (Math.floor(Math.random() * 6) !== 3) {
+              requestAnimationFrame(captureFrame); // Continue scanning
+            } else {
+              setTimeout(() => {
+                this.currentPlate = 'MOCK123'; // Mock plate number
+                this.scanningPaused = true; 
+                resolve(this.currentPlate);
+              }, 5000); // Simulate a delay for scanning
+            }
+          }
+          else{
+            this.clearAndStartNewScan();
           }
         }
       };

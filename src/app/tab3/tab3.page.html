@@ -7,7 +7,10 @@
 <ion-content>
   <div class="scanner-container">
     <video #videoFeed autoplay playsinline></video>
-    <div *ngIf="scanningInProgress" class="status-message">Please wait...</div>
+    <div *ngIf="!videoService.currentPlate" class="status-message">
+      Scanning for plates...
+      <ion-progress-bar type="indeterminate"></ion-progress-bar>
+    </div>
     <div *ngIf="videoService.currentPlate" class="result-success">
       Detected Plate: {{ videoService.currentPlate }}
     </div>
