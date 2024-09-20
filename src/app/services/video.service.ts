@@ -35,7 +35,6 @@ export class VideoService {
       return null;
     }
   }
-
   async scanVideoStream(videoElement: HTMLVideoElement): Promise<string | null> {
     return new Promise<string | null>((resolve) => {
       const captureFrame = async () => {
@@ -79,7 +78,7 @@ export class VideoService {
               this.scanningPaused = true;
               this.currentFrameImage = capturedPhoto; // Save the current captured image
               // this.detectedText = await this.frameTextDetection(capturedPhoto);
-              this.plateDataService.savePlateData(this.currentPlate, this.currentFrameImage);
+              // this.plateDataService.savePlateData(this.currentPlate, this.currentFrameImage);
               resolve(result[0].number); // Resolve with detected plate
             } else {
               requestAnimationFrame(captureFrame); // Continue scanning if no result
@@ -91,7 +90,6 @@ export class VideoService {
         } else {
           if (!this.platform.is('cordova') ){
 
-            // Mock results for web browser
             console.log('Cordova not available, using mock result');
             if (Math.floor(Math.random() * 6) !== 3) {
               requestAnimationFrame(captureFrame); // Continue scanning
@@ -120,6 +118,9 @@ export class VideoService {
   saveAndStartNewScan(): void {
     if (this.currentPlate) {
       this.detectedPlates.push(this.currentPlate); // Save the current plate to the array
+      if (this.currentFrameImage) {
+        this.plateDataService.savePlateData(this.currentPlate, this.currentFrameImage); // Save the current plate data
+      }
       this.currentPlate = null; // Reset the current plate
     }
     this.scanningPaused = false;

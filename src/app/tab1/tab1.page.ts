@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PlateDataService } from '../services/plate-data.service';
 import { PlateData } from '../models/plate-data.model';
+// import { Geolocation, Position } from '@capacitor/geolocation';
 
 @Component({
   selector: 'app-tab1',
@@ -9,6 +10,7 @@ import { PlateData } from '../models/plate-data.model';
 })
 export class Tab1Page implements OnInit {
   savedPlates: PlateData[] = [];
+  // public currentLocation: string = '';
 
   constructor(private plateDataService: PlateDataService) {}
 
