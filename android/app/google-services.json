@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "56743134832",
+    "project_id": "jwre-ocr",
+    "storage_bucket": "jwre-ocr.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:56743134832:android:aed7fb286f56c5e8c196b5",
+        "android_client_info": {
+          "package_name": "com.jware.carparkalpr"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-oNl2ysIfash5AN3n0paka-Di2XG9d_k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:56743134832:android:470356ef43ef41f0c196b5",
+        "android_client_info": {
+          "package_name": "io.ionic.starter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-oNl2ysIfash5AN3n0paka-Di2XG9d_k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

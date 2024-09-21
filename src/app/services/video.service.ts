@@ -119,7 +119,7 @@ export class VideoService {
     if (this.currentPlate) {
       this.detectedPlates.push(this.currentPlate); // Save the current plate to the array
       if (this.currentFrameImage) {
-        this.plateDataService.savePlateData(this.currentPlate, this.currentFrameImage); // Save the current plate data
+        this.plateDataService.savePlateData(this.currentPlate, this.currentFrameImage, this.base64Data); // Save the plate data
       }
       this.currentPlate = null; // Reset the current plate
     }
