@@ -12,7 +12,10 @@
       <ion-progress-bar type="indeterminate"></ion-progress-bar>
     </div>
     <div *ngIf="videoService.currentPlate" class="result-success">
-      Detected Plate: {{ videoService.currentPlate }}
+      Plate: {{ videoService.currentPlate }}
+    </div>
+    <div *ngIf="videoService.detectedState" class="result-success">
+      State: {{ videoService.detectedState }}
     </div>
     <!-- <div *ngIf="videoService.textDetections" class="result-success">
       Detected Plate: {{ videoService.textDetections }}
